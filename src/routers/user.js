@@ -1,6 +1,6 @@
-module.exports = ({ route }) => {
+module.exports = ({ route, controller }) => {
     route.get('/test', [], (req, res) => {
-        res.send('test');
+        controller.user.test(req, res);
     });
 
     return route;
