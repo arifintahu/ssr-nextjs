@@ -1,10 +1,12 @@
-const app           = require('express')();
-const bodyParser    = require('body-parser');
+const express       = require('express');
+const app           = express();
 const server        = require('http').createServer(app);
 const next          = require('next');
 
 const loader        = require('./loaders');
+const router        = require('./routers');
 const dev           = process.env.NODE_ENV !== 'production';
+
 const nextApp       = next({ 
     dev,
     dir: './src/client'
@@ -13,23 +15,16 @@ const nextHandler = nextApp.getRequestHandler();
 
 nextApp.prepare().then(async () => {
     await loader();
-    const PORT  = process.env.PORT || 8080;
-    const api   = process.env.API || 'api';
+    const PORT  = process.env.PORT  || 8080;
+    const api   = process.env.API   || 'api';
     
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
+    app.use(`/${api}`, router);
 
     app.get('*', (req, res) => {
         return nextHandler(req, res);
     });
-  
-    // app.post('/login', (req, res) => {
-    //   controller.user.login(req, res);
-    // });
-  
-    // app.post('/register', (req, res) => {
-    //   controller.user.register(req, res);
-    // });
   
     server.listen(PORT, (err) => {
         if (err) throw err;
