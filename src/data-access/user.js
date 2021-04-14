@@ -1,3 +1,5 @@
+const db = require("../loaders/db");
+
 module.exports = {
     getAllUser: () => {
         return new Promise((resolve, reject) => {
@@ -9,7 +11,22 @@ module.exports = {
             })
             .catch((err) => {
                 reject(err);
-            })
+            });
         })
+    },
+    getUser: (username) => {
+        return new Promise((resolve, reject) => {
+            db.user.findOne({
+                where: {
+                    username
+                }
+            })
+            .then((result) => {
+                resolve(result);
+            })
+            .catch((err) => {
+                reject(err);
+            })
+        });
     }
 }
